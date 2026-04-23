@@ -1,4 +1,6 @@
 # Smart Task Manager (DSA Project)
+<img width="1536" height="800" alt="image" src="https://github.com/user-attachments/assets/1db7c2e1-f882-49ba-9860-5a74ae664901" />
+
 
 ## 🚀 Features
 - Priority Queue using Min Heap
