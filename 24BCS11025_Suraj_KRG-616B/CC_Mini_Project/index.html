@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Priority Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <span class="logo-icon">⬡</span>
+        <span id="ccmini" class = "logo-text">Competitive Coding Mini Project</span>
+        <div class="logo">
+          <span class="logo-icon">⬡</span>
+          <span class="logo-text">TaskFlow</span>
+        </div>
+        <p class="tagline">Priority Queue · Min-Heap Engine</p>
+      </div>
+      <div class="header-right">
+        <div class="stats-bar">
+          <div class="stat">
+            <span class="stat-num" id="totalCount">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num" id="completedCount">0</span>
+            <span class="stat-label">Done</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num" id="pendingCount">0</span>
+            <span class="stat-label">Pending</span>
+          </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <span id="themeIcon">☽</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Add Task Form -->
+    <section class="form-card">
+      <h2 class="form-title">New Task</h2>
+      <div class="form-grid">
+        <div class="input-group full-width">
+          <label>Task Title</label>
+          <input id="taskInput" type="text" placeholder="What needs to be done?" autocomplete="off" />
+          <span class="error-msg" id="taskError">Please enter a task title.</span>
+        </div>
+        <div class="input-group">
+          <label>Priority</label>
+          <select id="priorityInput">
+            <option value="">Select priority</option>
+            <option value="1">🔴 High</option>
+            <option value="2">🟡 Medium</option>
+            <option value="3">🟢 Low</option>
+          </select>
+          <span class="error-msg" id="priorityError">Please select a priority.</span>
+        </div>
+        <div class="input-group">
+          <label>Due Date</label>
+          <input type="date" id="dateInput" />
+          <span class="error-msg" id="dateError">Please pick a date.</span>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="addTask()">
+          <span>＋</span> Add Task
+        </button>
+        <button class="btn btn-execute" onclick="executeTask()">
+          <span>▶</span> Execute Highest Priority
+        </button>
+      </div>
+    </section>
+
+    <!-- Executing banner -->
+    <div class="executing-banner" id="executingBanner">
+      <span class="pulse-dot"></span>
+      <span id="executingText">No task executing</span>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" placeholder="Search tasks..." oninput="displayTasks()" />
+      </div>
+      <div class="filter-pills">
+        <button class="pill active" data-filter="all" onclick="setFilter(this, 'all')">All</button>
+        <button class="pill" data-filter="1" onclick="setFilter(this, '1')">🔴 High</button>
+        <button class="pill" data-filter="2" onclick="setFilter(this, '2')">🟡 Medium</button>
+        <button class="pill" data-filter="3" onclick="setFilter(this, '3')">🟢 Low</button>
+        <button class="pill" data-filter="completed" onclick="setFilter(this, 'completed')">✓ Completed</button>
+      </div>
+    </div>
+
+    <!-- Task List -->
+    <ul id="taskList" class="task-list"></ul>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">◎</div>
+      <h3>No tasks here</h3>
+      <p>Add a task above to get started.<br/>Your priority queue is waiting.</p>
+    </div>
+
+    <!-- DSA Info Panel -->
+    <details class="dsa-panel">
+      <summary>⬡ How the Min-Heap Engine Works</summary>
+      <div class="dsa-content">
+        <div class="dsa-grid">
+          <div class="dsa-card">
+            <h4>What is a Min-Heap?</h4>
+            <p>A complete binary tree where each parent node has a value ≤ its children. The minimum element (highest priority task) always sits at the root — giving us <strong>O(1) peek</strong>.</p>
+          </div>
+          <div class="dsa-card">
+            <h4>Time Complexities</h4>
+            <ul>
+              <li><code>insert()</code> — O(log n) via heapify-up</li>
+              <li><code>extractMin()</code> — O(log n) via heapify-down</li>
+              <li><code>getMin()</code> — O(1), always heap[0]</li>
+              <li><code>delete(i)</code> — O(log n) after splice + rebuild</li>
+            </ul>
+          </div>
+          <div class="dsa-card">
+            <h4>Why not a sorted array?</h4>
+            <p>A sorted array costs <strong>O(n)</strong> per insertion (shifting). A heap costs only <strong>O(log n)</strong> — crucial when you have hundreds of tasks being added/removed rapidly.</p>
+          </div>
+          <div class="dsa-card">
+            <h4>Implementation</h4>
+            <p>Stored as a flat array. For index <code>i</code>: left child = <code>2i+1</code>, right = <code>2i+2</code>, parent = <code>⌊(i−1)/2⌋</code>. No pointers needed.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <footer class="footer">
+      Built with Min-Heap Priority Queue · O(log n) insert &amp; delete · O(1) peek
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
